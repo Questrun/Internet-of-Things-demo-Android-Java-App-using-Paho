@@ -31,16 +31,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button touchbtn= findViewById(R.id.button);
+        String clientID="clientId-eFNq3ZYrvV";
+        String brokerURL="tcp://broker.hivemq.com:1883";
         try {
             MqttClientPersistence mqttClientPersistence = new MemoryPersistence();
-            MqttClient publisher = new MqttClient("tcp://broker.hivemq.com:1883", "GoodBoy",mqttClientPersistence);
+            MqttClient publisher = new MqttClient(brokerURL,clientID,mqttClientPersistence);
             MqttConnectOptions options = new MqttConnectOptions();
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);
             options.setConnectionTimeout(10);
             publisher.connect(options);
-            MqttClient subscriber = new MqttClient("tcp://broker.hivemq.com:1883", "GoodBoy",mqttClientPersistence);
-            String jx=touchSub(subscriber);
+            String jx="OFF";//touchSub(publisher);
             String stat=(jx.equals("ON"))?jx:"OFF";
             TextView tx = findViewById(R.id.text);
             tx.setText(stat);
@@ -48,20 +49,19 @@ public class MainActivity extends AppCompatActivity {
             touchbtn.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
                 new TouchPub(publisher,0,stat);
-                    MqttClient subscriber;
-                    String jx="";
-                    try {
-                        subscriber = new MqttClient("tcp://broker.hivemq.com:1883", "GoodBoy",mqttClientPersistence);
-                        jx=touchSub(subscriber);
-                    } catch (MqttException e) {
-                        e.printStackTrace();
-                    }
-                String stat=(jx.equals("ON"))?jx:"OFF";
-                TextView tx = findViewById(R.id.text);
-                tx.setText(jx);
+                Thread t =new Thread(() -> {
+                    Log.d("F","Running");
+                    String jx1 = touchSub(publisher);
+                    Log.d("DX","RES: "+jx1);
+                    String stat1 = (jx1.equals("ON")) ? jx1 : "OFF";
+
+                    TextView tx1 = findViewById(R.id.text);
+                    tx1.setText(jx1);
+                    Log.d("LogG","txt updated");
+                });
+                t.start();
                 }
             });
-            Log.d("F","Running");
         } catch (MqttException e) {
             e.printStackTrace();
         }
