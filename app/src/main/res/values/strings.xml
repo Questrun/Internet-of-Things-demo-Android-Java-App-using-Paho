@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">IOT</string>
+    <string name="iot_home_automation">IoT Home Automation</string>
+    <string name="touch">Touch</string>
+    <string name="gas">Gas</string>
+    <string name="water">Water</string>
 </resources>

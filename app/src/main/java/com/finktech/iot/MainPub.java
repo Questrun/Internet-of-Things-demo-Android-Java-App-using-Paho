@@ -1,18 +1,26 @@
 package com.finktech.iot;
 
+import android.util.Log;
+
+import org.eclipse.paho.client.mqttv3.IMqttClient;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 import java.util.concurrent.Callable;
-import org.eclipse.paho.client.mqttv3.*;
 
 
-public class TouchPub implements Callable<Void> {
+public class MainPub implements Callable<Void> {
     private final IMqttClient client;
     private final String stat;
     private final int id;
+    private final String topic;
+    private final int qos;
 
-    public TouchPub(IMqttClient client, int id, String stat) {
+    public MainPub(IMqttClient client, int id, String stat, String topic, int qos) {
         this.client = client;
         this.id=id;
         this.stat=stat;
+        this.topic=topic;
+        this.qos=qos;
     }
 
     @Override
@@ -22,10 +30,10 @@ public class TouchPub implements Callable<Void> {
         }
         MqttMessage msg = sendStatus();
         msg.setId(id);
-        msg.setQos(2);
+        msg.setQos(qos);
         msg.setRetained(true);
-        client.publish("stat/t1touchwahcantt/POWER",msg);
-        return null;//(stat.equals("OFF"))?"ON":"OFF";
+        client.publish(topic,msg);
+        return null;
     }
 
     private MqttMessage sendStatus()
