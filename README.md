@@ -1,4 +1,4 @@
-# IOT
+# Internet of Things Demo - Android App using Paho
 Java/XML based Android IoT(Internet Of Things) demo app using Paho & Moquette Mqtt libraries
 
 - Issues exist within paho library that render the app useless
